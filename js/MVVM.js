@@ -101,7 +101,7 @@ MVVM.prototype._compile = function() {
   var self = this;
   var i = 0, j = 0;
 
-  // 更新函数，但observer中model的数据改变的时候，通过Watcher的update调用更新函数，从而更新dom
+  // 更新函数，但observer中model的数据改变的时候，通过Watcher_js的update调用更新函数，从而更新dom
   var updater = null;
   for(; i < children.length; i++) {
     var node = children[i];
@@ -131,7 +131,7 @@ MVVM.prototype._compile = function() {
               }
               node.innerText = innerText;
             };
-            self._binding[attr]._texts.push(new Watcher(self, attr, updater));
+            self._binding[attr]._texts.push(new Watcher_js(self, attr, updater));
           })(attr);
         }
       }
@@ -155,7 +155,7 @@ MVVM.prototype._compile = function() {
           }
           // data属性绑定多个watcher
           self._binding[vmDataAttr]._directives.push(
-            new Watcher(self, vmDataAttr, updater)
+            new Watcher_js(self, vmDataAttr, updater)
           )
         } else if(attribute === "v-model" && (node.tagName = 'INPUT' || node.tagName == 'TEXTAREA')) {
           // 解析v-model
@@ -165,7 +165,7 @@ MVVM.prototype._compile = function() {
           }
           // data属性绑定多个watcher
           self._binding[vmDataAttr]._directives.push(
-            new Watcher(self, vmDataAttr, updater)
+            new Watcher_js(self, vmDataAttr, updater)
           )
           // 监听input/textarea的数据变化，同步到model去，实现双向绑定
           node.addEventListener("input", function(evt) {
@@ -186,14 +186,14 @@ MVVM.prototype._compile = function() {
 
 }
 /**
- * Watcher充当订阅者的角色，架起了Observer和Compile的桥梁，Observer监听到数据变化后，
- * 通知Wathcer更新视图(调用Wathcer的update方法)，Watcher再告诉Compile去调用更新函数，
- * 实现dom的更新。同时页面的初始化渲染也交给了Watcher（当然也可以放到Compile进行）。
+ * Watcher_js充当订阅者的角色，架起了Observer和Compile的桥梁，Observer监听到数据变化后，
+ * 通知Wathcer更新视图(调用Wathcer的update方法)，Watcher_js再告诉Compile去调用更新函数，
+ * 实现dom的更新。同时页面的初始化渲染也交给了Watcher_js（当然也可以放到Compile进行）。
  * @param {*} vm viewmodel
  * @param {*} attr data的某个属性
  * @param {*} cb 更新函数
  */
-function Watcher(vm, attr, cb) {
+function Watcher_js(vm, attr, cb) {
   this.vm = vm; // viewmodel
   this.attr = attr; // data的属性，一个watcher订阅一个data属性
   this.cb = cb; // 更新函数，在compile那边定义
@@ -201,7 +201,7 @@ function Watcher(vm, attr, cb) {
   this.update();
 }
 
-Watcher.prototype.update = function() {
+Watcher_js.prototype.update = function() {
   // 通知comile中的更新函数更新dom 
   this.cb(this.vm.$data[this.attr]);
 }
