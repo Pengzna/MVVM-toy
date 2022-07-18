@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "http": "^0.0.1-security"
+  },
+  "name": "mvvm",
+  "description": "大家都知道，vue是个MVVM框架，能够实现view和model的双向绑定，不像backbone那样，model改变需要手动去通知view更新，而vue实现的原理就是通过Object.defineProperty实现数据挟持，定义setter，然后数据改变的时候通知视图更新。  \r 下面是网上vue的实现原理图：\r ![image](https://user-gold-cdn.xitu.io/2018/4/10/162ad3d5be3e5105?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pengzna/MVVM-toy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pengzna/MVVM-toy/issues"
+  },
+  "homepage": "https://github.com/Pengzna/MVVM-toy#readme"
+}

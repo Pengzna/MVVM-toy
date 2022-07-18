@@ -1,4 +1,5 @@
 import { pattern_insertion } from '../const/regex';
+import { Watcher } from './watcher';
 
 /**
  * @author: Peng Junzhi
@@ -29,6 +30,7 @@ const fragment_compile = (node: any, vm: any) => {
     if(node.nodeType === 3) {
         const result_regex = pattern_insertion.exec(node.nodeValue);
         if(result_regex) {
+            const init_insertion_expr = node.nodeValue;
             console.log(`匹配插值表达式成功, 结果: ${result_regex}`);
             if(result_regex) {
                 // 链式获取对象里子属性的值
@@ -40,11 +42,39 @@ const fragment_compile = (node: any, vm: any) => {
                 console.log(`链式调用取出最终值: ${value}`);
                 // 随后用vm里data的值替换插值表达式的文本
                 node.nodeValue = node.nodeValue.replace(pattern_insertion, value);
+                new Watcher(vm, result_regex[1], (newValue: any) => {
+                    node.nodeValue = init_insertion_expr.replace(pattern_insertion, newValue);
+                })
             }
         }
         return;
     }
-    node.childNodes.forEach(element => {
+    /* 2. 实现输入框v-model绑定属性值 */
+    if(node.nodeType === 1 && node.nodeName === 'INPUT') {
+        const attr = Array.from(node.attributes);
+        attr.forEach((item: any) => {
+            if(item.nodeName === 'v-model') {
+                const value = item.nodeValue.split('.').reduce(
+                    (total: any, current: any) => total[current], vm.$data
+                );
+                node.value = value;
+                new Watcher(vm, item.nodeValue, (newValue: any) => {
+                    node.value = newValue;
+                })
+                node.addEventListener('input', (e: any) => {
+                    // 为了避免vm[more.like]的情况,需要链式取出最后一个元素
+                    const arr1 = item.nodeValue.split('.');
+                    const arr2 = arr1.slice(0, arr1.length - 1);
+                    const final = arr2.reduce(
+                        (total: any, current: any) => total[current], vm.$data
+                    );
+                    // 给vue的实例赋值
+                    final[arr1[arr1.length - 1]] = e.target.value;
+                })
+            }
+        })
+    }
+    node.childNodes.forEach((element: any) => {
         fragment_compile(element, vm);
     });
 }

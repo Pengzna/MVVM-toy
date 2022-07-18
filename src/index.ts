@@ -1,7 +1,7 @@
-import { observer } from "./observe";
-import { compile } from './complie';
+import { observer } from "./core/observe";
+import { compile } from './core/complie';
 
-class Toy_MVVM {
+class TOY {
     $data: any;
     constructor(vm: any){
         this.$data = vm.data;
@@ -10,5 +10,9 @@ class Toy_MVVM {
         // 模板解析
         compile(vm.el, this);
     }
+}
+
+function test(){
+    console.log(123)
 }
 

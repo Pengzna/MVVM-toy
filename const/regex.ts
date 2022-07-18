@@ -1,1 +1,0 @@
-export const pattern_insertion = /\{\{\s*(\S+)\s*\}\}/;
