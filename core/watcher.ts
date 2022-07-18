@@ -1,20 +1,34 @@
 /**
- * Watcher充当订阅者的角色，架起了Observer和Compile的桥梁，Observer监听到数据变化后，
- * 通知Wathcer更新视图(调用Wathcer的update方法)，Watcher再告诉Compile去调用更新函数，
- * 实现dom的更新。同时页面的初始化渲染也交给了Watcher（当然也可以放到Compile进行）。
- * @param {*} vm viewmodel
- * @param {*} attr data的某个属性
- * @param {*} cb 更新函数
+ * Dependency - 收集和通知订阅者
+ * 架起Observer和Compile的桥梁，Observer监听到数据变化后，
+ * 通知Dependency更新视图，Dependency再告诉Compile去调用更新函数，
+ * 实现dom的更新。同时页面的初始化渲染也交给了Dependency（当然也可以放到Compile进行）。
  */
- function Dependency(vm, attr, cb) {
-    this.vm = vm; // viewmodel
-    this.attr = attr; // data的属性，一个watcher订阅一个data属性
-    this.cb = cb; // 更新函数，在compile那边定义
-    // 初始化渲染视图
-    this.update();
-  }
-  
-  Watcher.prototype.update = function() {
-    // 通知comile中的更新函数更新dom 
-    this.cb(this.vm.$data[this.attr]);
-  }
+class Dependency {
+    subscribers: Array<any>;
+    constructor() {
+        this.subscribers = [];
+    }
+    addSub(sub) {
+        this.subscribers.push(sub);
+    }
+    notify() {
+        this.subscribers.forEach(sub => {
+            sub.update();
+        })
+    }
+}
+
+class Watcher {
+    vm: any;
+    key: any;
+    callback: any;
+    constructor(vm, key, callback){
+        this.vm = vm;
+        this.key = key; // vm对应的属性
+        this.callback = callback; // 记录如何更新文本内容的回调函数
+    }
+    update() {
+        this.callback();
+    }
+}
