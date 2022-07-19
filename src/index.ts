@@ -1,8 +1,10 @@
 import _compile from './compile/compile';
 import _observer from "./observer/observer";
 
-// import Watcher_ts from "./watcher/watcher";
-
+/**
+ * @Depcription: 百度 MVVM框架大作业主入口类
+ * @author: Peng Junzhi
+ */
 interface MVVM {
   $data: any;
   $methods: any;
@@ -10,6 +12,12 @@ interface MVVM {
   _binding: {};
 }
 
+/**
+ * MVVM 完成初始化操作，并且调用 observer 和 compile。
+ * 对$data进行代理，如此便可以通过this.attribute来代理this.$data.attribute。
+ * 因为一个属性可能对应多个指令，所以需要一个_binding 属性来存放属性对应的所有订阅者
+ * 这样属性一改变，就可以取出所有的订阅者去更新视图。
+ */
 class MVVM implements MVVM {
     // 初始化
   constructor(options: any){
@@ -25,6 +33,9 @@ class MVVM implements MVVM {
     this.proxyAttribute();
   }
 
+  /**
+  * 将this.<attr>的调用代理到this.$data.<attr>上，同时this.<attr>的值的改变也会同步到this.$data.<attr上>
+  */
   proxyAttribute() {
     var keys = Object.keys(this.$data);
     var self = this;
