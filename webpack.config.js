@@ -22,13 +22,6 @@ module.exports = {
           }
       }
     ]
-    // rules: [
-    //   {
-    //     test: /.ts$/, // 指定规则生效的文件：以ts结尾的文件
-    //     use: 'ts-loader', // 要使用的loader
-    //     exclude: /node-modules/ // 要排除的文件
-    //   }
-    // ]
   },
   // 设置哪些文件类型可以作为模块被引用
   resolve: {
