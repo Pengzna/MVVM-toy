@@ -79,85 +79,14 @@ MVVM
 
 `Watcher` 作为订阅者，充当 `Observer` 和 `Compile` 的中间桥梁，包含 `update` 方法，`update` 方法调用 `Compile` 中绑定的事件更新函数，实现对视图的初始化和更新操作。
 
-# 3. 代码实现
+# 3. 实例
 
-## 3.1. MVVM 的实现
-
-MVVM 完成初始化操作，并且调用 observer 和 compile。对$data进行代理，如此便可以通过this.attribute来代理this.$data.attribute。因为一个属性可能对应多个指令，所以需要一个\_binding 属性来存放属性对应的所有订阅者，这样属性一改变，就可以取出所有的订阅者去更新视图。
-
-```
-function MVVM(options) {
-  // 初始化
-  this.$data = options.data;
-  this.$methods = options.methods;
-  this.$el = options.el;
-  // 保存data的每个属性对应的所有watcher
-  this._binding  = {};
-  // 调用observer和compile
-  this._observer(options.data);
-  this._compile();
-  // this.xxx 代理this.$data.xxx
-  this.proxyAttribute();
-}
-
-```
-
-## Observer 的实现
-
-Observer 遍历$data，通过 Object.defineProperty 的 setter 的挟持数据改变，监听到数据改变后取出所有该属性对应的订阅者，然后通知更新函数更新视图。  
-注意：这里有循环，且闭包（getter 和 setter）里面需要依赖循环项（value 和 key），所以用立即执行函数解决循环项获取不对的问题。
-
-```
-MVVM.prototype._observer = function(data) {
-  var self = this;
-  for(var key in this.$data) {
-    if (this.$data.hasOwnProperty(key)) {
-      // 初始化属性对应的订阅者容器（数组）
-      this._binding[key] = {
-        _directives: [],
-        _texts: []
-      };
-
-      if(typeof this.$data[key] === "object") {
-        return this._observer(this.$data[key]);
-      }
-      var val = data[key];
-      // 立即执行函数获取正确的循环项
-      (function(value, key) {
-        Object.defineProperty(self.$data, key, {
-          enumerable: true,
-          configurable: true,
-          get: function() {
-            return value;
-          },
-          set(newval) {
-            if(newval === value) {
-              return;
-            }
-            value = newval;
-            // 监听到数据改变后取出所有该属性对应的订阅者，通知view更新-属性
-            if(self._binding[key]._directives) {
-              self._binding[key]._directives.forEach(function(watcher) {
-                watcher.update();
-              }, self);
-            }
-            // 监听到数据改变后取出所有该属性对应的订阅者，通知view更新-文本
-            if(self._binding[key]._texts) {
-              self._binding[key]._texts.forEach(function(watcher) {
-                watcher.update();
-              }, self);
-            }
-          }
-        });
-      })(val, key);
-    }
-  }
-}
-```
-
-# 4. 实例
-
-> 包含v-on（事件绑定）、v-bind（单向绑定）、v-model（双向绑定）、小胡子语法（插值表达式，双向绑定）
+> 实现功能：
+>
+> - v-on（事件绑定）
+> - v-bind（单向绑定）
+> - v-model（双向绑定）
+> - 小胡子语法（插值表达式{{}}，双向绑定）
 
 ```html
 <!DOCTYPE html>
@@ -169,7 +98,7 @@ MVVM.prototype._observer = function(data) {
   <title>Document</title>
 </head>
 <body>
-  <div id="view">
+  <div id="app">
     <div v-bind:id="id">
       {{message}}:{{name}}
     </div>
@@ -180,7 +109,7 @@ MVVM.prototype._observer = function(data) {
 <script src="../dist/bundle.js"></script>
 <script>
   var vue = new MVVM({
-    el: "#view",
+    el: "#app",
     data: {
       message: "测试",
       name: "百度前端",
