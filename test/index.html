@@ -20,19 +20,17 @@
   var vue = new MVVM({
     el: "#view",
     data: {
-      message: "欢迎光临",
-      name: "鸣人",
-      id: "id"
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
     },
     methods: {
       handleClick: function() {
-        alert(this.message + ":" + this.name + ", 点击确定路飞会出来");
-        this.name = '路飞';
+        alert(this.message + ":" + this.name + ", 点击确定会修改值");
+        this.name = '修改了值为此~';
+        console.log(document.getElementById(1234))
       }
     }
   })
-  setTimeout(function() {
-    vue.message = "你好";
-  }, 1000);
 </script>
 </html>
