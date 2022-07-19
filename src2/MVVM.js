@@ -157,7 +157,7 @@ MVVM.prototype._compile = function() {
           self._binding[vmDataAttr]._directives.push(
             new Watcher_js(self, vmDataAttr, updater)
           )
-        } else if(attribute === "v-model" && (node.tagName = 'INPUT' || node.tagName == 'TEXTAREA')) {
+        } else if(attribute === "v-model" && (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA')) {
           // 解析v-model
           // 更新函数
           updater = function(val) {
