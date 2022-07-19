@@ -1,10 +1,11 @@
+
 /**
  * mock object for unit test
  * @Baidu 2022 summer MVVM framework
  * @author Peng Junzhi
  * @param {*} options 
  */
- function MVVM(options) {
+function MVVM_mock(options) {
   // 初始化
   this.$data = options.data;
   this.$methods = options.methods;
@@ -19,7 +20,7 @@
 }
 
 // 将this.<attr>的调用代理到this.$data.<attr>上，同时this.<attr>的值的改变也会同步到this.$data.<attr上>
-MVVM.prototype.proxyAttribute = function() {
+MVVM_mock.prototype.proxyAttribute = function() {
   var keys = Object.keys(this.$data);
   var self = this;
   for(var i = 0; i < keys.length; i++) {
@@ -41,7 +42,7 @@ MVVM.prototype.proxyAttribute = function() {
   }
 }
 
-MVVM.prototype._observer = function(data) {
+MVVM_mock.prototype._observer = function(data) {
   var self = this;
   for(var key in this.$data) {
     if (this.$data.hasOwnProperty(key)) {
@@ -87,7 +88,7 @@ MVVM.prototype._observer = function(data) {
   }
 }
 
-MVVM.prototype._compile = function() {
+MVVM_mock.prototype._compile = function() {
   var dom = document.querySelector(this.$el);
   var children = dom.children;
   var self = this;
@@ -191,4 +192,13 @@ Watcher_js.prototype.update = function() {
   this.cb(this.vm.$data[this.attr]);
 }
 
-module.exports = MVVM
+// const fs = require("fs");
+// const jsdom = require("jsdom");
+// const { JSDOM } = jsdom;
+
+// const html = fs.readFileSync("./index.html");
+// const page = new JSDOM(html)
+
+
+// module.exports = { MVVM_mock, page }
+module.exports = {MVVM_mock}

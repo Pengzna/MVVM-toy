@@ -1,21 +1,45 @@
-const MVVM = require('../mock')
+if (typeof TextEncoder !== 'function') {
+    const TextEncodingPolyfill = require('text-encoding');
+    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
+    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
+}
+// const fs = require("fs");
+// const html = fs.readFileSync("../index.html");
+// const page = new JSDOM(html)
 
-const vue = new MVVM({
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+const jsDomIntance = new JSDOM(`
+<!DOCTYPE html>
+<body>
+  <div id="app">
+    <div v-bind:id="id">
+      v-bind单元测试 - 百度前端大作业2022
+    </div>
+  </div>
+</body>
+<script src="../../dist/bundle.js"></script>
+<script>
+  var vue = new MVVM_mock({
     el: "#app",
     data: {
-      message: "测试",
-      name: "百度前端",
       id: "1234"
-    },
-    methods: {
-      handleClick: function() {
-        alert(this.message + ":" + this.name + ", 点击确定会修改值");
-        this.name = '修改了值为此~';
-        console.log(document.getElementById(1234))
-      }
     }
-})
+  })
+</script>
+</html>
+`, 
+  {
+    contentType: "text/html",
+    // runScripts: "dangerously",
+    resources: "usable"
+  },
+)
+const window_mock = jsDomIntance.window; // window 对象
+const document = window_mock.document; // document 对象
+const value = document.getElementById('1234');
 
-test('1 + 2 = 3', () => {
-    expect(sum(1, 2)).toBe(3);
+test('v-bind test', () => {
+    expect(value).toBe(document.getElementById('1234'));
 });

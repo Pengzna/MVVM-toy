@@ -54,6 +54,13 @@ MVVM
 │  ├─ watcher
 │  │  └─ watcher.ts // wather类
 │  └─ index.ts // 主入口文件
+├─ test
+│  ├─ unitTest // 单元测试文件
+│  │  ├─ vBind.test.js
+│  │  ├─ vModel.test.js
+│  │  └─ vOn.test.js
+│  ├─ index.html // 集成测试html
+│  └─ mock.js // mock
 ├─ .gitignore
 ├─ package-lock.json
 ├─ package.json
@@ -87,6 +94,8 @@ MVVM
 > - v-bind（单向绑定）
 > - v-model（双向绑定）
 > - 小胡子语法（插值表达式{{}}，双向绑定）
+
+## 3.1. HTML
 
 ```html
 <!DOCTYPE html>
@@ -127,3 +136,84 @@ MVVM
 </html>
 ```
 
+## 3.2. 效果展示
+
+***v-model***![image-20220719232943560](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220719232943560.png)
+
+***v-on / v-bind***![image-20220719232957753](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220719232957753.png)
+
+# 4. 单元测试
+
+> 考虑到我编写的都是类，在`MVVM`类构造的时候即调用所有模块，进行绑定、注册、监听、订阅等工作。因此选择构造dom对v-on（事件绑定）、v-model（双向绑定）、v-bind（数据单向绑定）进行测试
+
+## 4.1. 测试配置
+
+- 测试工具：`"jest": "^28.1.3"`
+- 测试环境：`"node.js": "^v16.13.2"`
+
+- `package.json`配置
+
+  - ```json
+    {
+      "dependencies": {
+        "http": "^0.0.1-security",
+        "jest-environment-jsdom": "^28.1.3",
+        "jsdom": "^20.0.0",
+        "text-encoding": "^0.7.0"
+      },
+      "name": "mvvm",
+      "description": "简易的MVVM框架，用typescript实现",
+      "version": "1.0.0",
+      "main": "index.js",
+      "directories": {
+        "test": "test"
+      },
+      "devDependencies": {
+        "@babel/core": "^7.18.9",
+        "@babel/preset-env": "^7.18.9",
+        "@babel/preset-typescript": "^7.18.6",
+        "@types/chai": "^4.3.1",
+        "@types/jest": "^28.1.6",
+        "@types/mocha": "^9.1.1",
+        "babel-jest": "^28.1.3",
+        "chai": "^4.3.6",
+        "jest": "^28.1.3",
+        "mocha": "^10.0.0",
+        "ts-loader": "^9.3.1",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.7.4",
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0"
+      },
+      "scripts": {
+        "test": "jest",
+        "build": "webpack",
+        "coverage": "jest --coverage"
+      },
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Pengzna/MVVM-toy.git"
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "bugs": {
+        "url": "https://github.com/Pengzna/MVVM-toy/issues"
+      },
+      "homepage": "https://github.com/Pengzna/MVVM-toy#readme"
+    }
+    
+    ```
+
+- `jest.config.js`配置
+
+  - ```js
+    module.exports = {
+        transform: {
+          '^.+\\.js$': 'babel-jest'
+        },
+        testEnvironment: 'jsdom'
+    }
+    ```
+
+- 
