@@ -1,6 +1,12 @@
 import Watcher_ts from "../watcher/watcher";
 import { RegexpStr } from '../const/regex';
 
+/**
+ * Compile 遍历所有的节点，解析指令，为每个节点绑定更新函数，且添加订阅者
+ * 当订阅者通知 view 更新的时候，调用更新函数，实现对视图的更新。  
+ * 这里同样需要使用立即执行函数来解决闭包依赖的循环项问题。
+ * @param that 
+ */
 export default function _compile(that: any) {
     var dom = document.querySelector(that.$el);
     var children = dom.children;

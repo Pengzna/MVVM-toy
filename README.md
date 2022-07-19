@@ -155,126 +155,11 @@ MVVM.prototype._observer = function(data) {
 }
 ```
 
-## Compile 的实现
+# 4. 实例
 
-Compile 遍历所有的节点，解析指令，为每个节点绑定更新函数，且添加订阅者，当订阅者通知 view 更新的时候，调用更新函数，实现对视图的更新。  
-这里同样需要使用立即执行函数来解决闭包依赖的循环项问题。  
-还有一点需要解决的是，如果节点的 innerText 依赖多个属性的话，如何做到只替换改变属性对应的文本问题。  
-比如{{message}}：{{name}}已经被编译解析成“欢迎： 鸣人”，如果 message 改变为“你好”，怎么让使得“欢迎：鸣人”改为“你好：鸣人”。
+> 包含v-on（事件绑定）、v-bind（单向绑定）、v-model（双向绑定）、小胡子语法（插值表达式，双向绑定）
 
-```
-MVVM.prototype._compile = function() {
-  var dom = document.querySelector(this.$el);
-  var children = dom.children;
-  var self = this;
-  var i = 0, j = 0;
-  for(; i < children.length; i++) {
-    var node = children[i];
-    (function(node) {
-      // 解析{{}}里面的内容
-      // 保存指令原始内容，不然数据更新时无法完成替换
-      var text = node.innerText;
-      var matches = text.match(/{{([^{}]+)}}/g);
-      if(matches && matches.length > 0) {
-        // 保存和node绑定的所有属性
-        node.bindingAttributes = [];
-        for(j = 0; j < matches.length; j++) {
-          // data某个属性
-          var attr = matches[j].match(/{{([^{}]+)}}/)[1];
-          // 将和该node绑定的data属性保存起来
-          node.bindingAttributes.push(attr);
-          (function(attr) {
-            self._binding[attr]._texts.push(new Watcher(self, attr, function() {
-              // 改变的属性值对应的文本进行替换
-              var innerText = text.replace(new RegExp("{{" + attr + "}}", "g"), self.$data[attr]);
-              // 如果该node绑定多个属性 eg:<div>{{title}}{{description}}</div>
-              for(var k = 0; k < node.bindingAttributes.length; k++) {
-                if(node.bindingAttributes[k] !== attr) {
-                  // 恢复原来没改变的属性对应的文本
-                  innerText = innerText.replace("{{" + node.bindingAttributes[k] + "}}", self.$data[node.bindingAttributes[k]]);
-                }
-              }
-              node.innerText = innerText;
-            }));
-          })(attr);
-        }
-      }
-
-      // 解析vue指令
-      var attributes = node.getAttributeNames();
-      for(j = 0; j < attributes.length; j++) {
-        // vue指令
-        var attribute = attributes[j];
-        // DOM attribute
-        var domAttr = null;
-        // 绑定的data属性
-        var vmDataAttr = node.getAttribute(attribute);
-        // 更新函数，但observer中model的数据改变的时候，通过Watcher的update调用更新函数，从而更新dom
-        var updater = null;
-
-        if(/v-bind:([^=]+)/.test(attribute)) {
-          // 解析v-bind
-          domAttr = RegExp.$1;
-          // 更新函数
-          updater = function(val) {
-            node[domAttr] = val;
-          }
-          // data属性绑定多个watcher
-          self._binding[vmDataAttr]._directives.push(
-            new Watcher(self, vmDataAttr, updater)
-          )
-        } else if(attribute === "v-model" && (node.tagName = 'INPUT' || node.tagName == 'TEXTAREA')) {
-          // 解析v-model
-          // 更新函数
-          updater = function(val) {
-            node.value = val;
-          }
-          // data属性绑定多个watcher
-          self._binding[vmDataAttr]._directives.push(
-            new Watcher(self, vmDataAttr, updater)
-          )
-          // 监听input/textarea的数据变化，同步到model去，实现双向绑定
-          node.addEventListener("input", function(evt) {
-            var $el = evt.currentTarget;
-            self.$data[vmDataAttr] = $el.value;
-          });
-        } else if(/v-on:([^=]+)/.test(attribute)) {
-          // 解析v-on
-          var event = RegExp.$1;
-          var method = vmDataAttr;
-          node.addEventListener(event, function(evt) {
-            self.$methods[method] && self.$methods[method].call(self, evt);
-          });
-        }
-      }
-    })(node);
-  }
-
-}
-```
-
-## 3.4. Wathcer 的实现
-
-Watcher 充当订阅者的角色，架起了 Observer 和 Compile 的桥梁，Observer 监听到数据变化后，通知 Wathcer 更新视图(调用 Wathcer 的 update 方法)，Watcher 再告诉 Compile 去调用更新函数，实现 dom 的更新。同时页面的初始化渲染也交给了 Watcher（当然也可以放到 Compile 进行）。
-
-```
-function Watcher(vm, attr, cb) {
-  this.vm = vm; // viewmodel
-  this.attr = attr; // data的属性，一个watcher订阅一个data属性
-  this.cb = cb; // 更新函数，在compile那边定义
-  // 初始化渲染视图
-  this.update();
-}
-
-Watcher.prototype.update = function() {
-  // 通知comile中的更新函数更新dom
-  this.cb(this.vm.$data[this.attr]);
-}
-```
-
-### 例子
-
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -292,26 +177,23 @@ Watcher.prototype.update = function() {
     <button v-on:click="handleClick">获取输入值</button>
   </div>
 </body>
-<script src="js/MVVM.js" type="text/javascript"></script>
+<script src="../dist/bundle.js"></script>
 <script>
   var vue = new MVVM({
     el: "#view",
     data: {
-      message: "欢迎光临",
-      name: "鸣人",
-      id: "id"
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
     },
     methods: {
       handleClick: function() {
-        alert(this.message + ":" + this.name + ", 点击确定路飞会出来");
-        this.name = '路飞';
+        alert(this.message + ":" + this.name + ", 点击确定会修改值");
+        this.name = '修改了值为此~';
+        console.log(document.getElementById(1234))
       }
     }
   })
-
-  setTimeout(function() {
-    vue.message = "你好";
-  }, 1000);
 </script>
 </html>
 ```
