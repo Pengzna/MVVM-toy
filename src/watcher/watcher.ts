@@ -4,20 +4,20 @@
  * 实现dom的更新。同时页面的初始化渲染也交给了Watcher_ts（当然也可以放到Compile进行）。
  * @param  vm viewmodel
  * @param  attr data的某个属性
- * @param  cb 更新函数
+ * @param  callback 更新函数
  */
  export default class Watcher_ts {
     vm: any;
     attr: any;
-    cb: any;
-    constructor(vm: any, attr: any, cb: any){
+    callback: any;
+    constructor(vm: any, attr: any, callback: any){
         this.vm = vm; // viewmodel
         this.attr = attr; // data的属性，一个watcher订阅一个data属性
-        this.cb = cb; // 更新函数，在compile那边定义
+        this.callback = callback; // 更新函数，在compile那边定义
         this.update();
     }
     // 初始化渲染视图
     update(): void {
-        this.cb(this.vm.$data[this.attr]);
+        this.callback(this.vm.$data[this.attr]);
     }
   }

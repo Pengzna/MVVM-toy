@@ -95,6 +95,4 @@ export default function _compile(that: any) {
         }
       })(node);
     }
-  
   }
-
