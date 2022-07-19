@@ -7,7 +7,7 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="view">
+  <div id="app">
     <div v-bind:id="id">
       {{message}}:{{name}}
     </div>
@@ -18,7 +18,7 @@
 <script src="../dist/bundle.js"></script>
 <script>
   var vue = new MVVM({
-    el: "#view",
+    el: "#app",
     data: {
       message: "测试",
       name: "百度前端",
