@@ -3,6 +3,7 @@ export const RegexpStr = {
     brace: /{{([^{}]+)}}/,
     braceg: /{{([^{}]+)}}/g,
     vOnAttribute: /v-on:([^=]+)/,
+    vBindAttribute: /v-bind:([^=]+)/,
     forStatement: /([a-z_]+[\w]*)\s+in\s+([a-z_][\w.]+(\[.*\])*)/,
     bracket: /\[['|"]?(\w+)['|"]?\]/,   // 中括号
     isString: /'([^']*)'|"([^\"]*)"/,

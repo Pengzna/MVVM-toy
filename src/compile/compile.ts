@@ -58,7 +58,7 @@ export default function _compile(that: any) {
           // 绑定的data属性
           var vmDataAttr = node.getAttribute(attribute);
          
-          if(/v-bind:([^=]+)/.test(attribute)) {
+          if(RegexpStr.vBindAttribute.test(attribute)) {
             // 解析v-bind
             domAttr = RegExp.$1;
             // 更新函数
