@@ -1,45 +1,22 @@
-if (typeof TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-}
-// const fs = require("fs");
-// const html = fs.readFileSync("../index.html");
-// const page = new JSDOM(html)
-
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-const jsDomIntance = new JSDOM(`
-<!DOCTYPE html>
-<body>
-  <div id="app">
-    <div v-bind:id="id">
-      v-bind单元测试 - 百度前端大作业2022
-    </div>
-  </div>
-</body>
-<script src="../../dist/bundle.js"></script>
-<script>
-  var vue = new MVVM_mock({
-    el: "#app",
-    data: {
-      id: "1234"
-    }
-  })
-</script>
-</html>
-`, 
-  {
-    contentType: "text/html",
-    // runScripts: "dangerously",
-    resources: "usable"
-  },
-)
-const window_mock = jsDomIntance.window; // window 对象
-const document = window_mock.document; // document 对象
-const value = document.getElementById('1234');
+import { MVVM } from '../../src/index';
 
 test('v-bind test', () => {
-    expect(value).toBe(document.getElementById('1234'));
+  document.body.innerHTML = `
+  <div id="app">
+    <div v-bind:id="id">{{message}}:{{name}}</div>
+    <input type="text" v-model="name"/>
+    <button v-on:click="handleClick">获取输入值</button>
+  </div>
+  `;
+  const vue = new MVVM({
+    el: "#app",
+    data: {
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
+    },
+  })
+  const testNode = document.getElementById('1234')
+  const actualValue = "{{message}}:{{name}}"
+  expect(testNode.textContent).toBe(actualValue);
 });
