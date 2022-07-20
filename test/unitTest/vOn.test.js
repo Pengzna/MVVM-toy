@@ -1,6 +1,6 @@
 import { MVVM } from '../../src/index';
 
-test('v-bind test', () => {
+test('v-on test', () => {
   document.body.innerHTML = `
   <div id="app">
     <div v-bind:id="id">{{message}}:{{name}}</div>
