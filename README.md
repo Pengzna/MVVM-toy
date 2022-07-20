@@ -221,151 +221,98 @@ MVVM
 ### 4.2.1. vBind.test.js
 
 ```js
-if (typeof TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-}
-
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-const jsDomIntance = new JSDOM(`
-<!DOCTYPE html>
-<body>
-  <div id="app">
-    <div v-bind:id="id">
-      v-bind单元测试 - 百度前端大作业2022
-    </div>
-  </div>
-</body>
-<script src="../../dist/bundle.js"></script>
-<script>
-  var vue = new MVVM_mock({
-    el: "#app",
-    data: {
-      id: "1234"
-    }
-  })
-</script>
-</html>
-`, 
-  {
-    contentType: "text/html",
-    // runScripts: "dangerously",
-    resources: "usable"
-  },
-)
-const window_mock = jsDomIntance.window; // window 对象
-const document = window_mock.document; // document 对象
-const value = document.getElementById('1234');
+import { MVVM } from '../../src/index';
 
 test('v-bind test', () => {
-    expect(value).toBe(document.getElementById('1234'));
+  document.body.innerHTML = `
+  <div id="app">
+    <div v-bind:id="id">{{message}}:{{name}}</div>
+    <input type="text" v-model="name"/>
+    <button v-on:click="handleClick">获取输入值</button>
+  </div>
+  `;
+  const vue = new MVVM({
+    el: "#app",
+    data: {
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
+    },
+  })
+  const testNode = document.getElementById('1234')
+  const actualValue = "{{message}}:{{name}}"
+  expect(testNode.textContent).toBe(actualValue);
 });
+
 ```
 
 ### 4.2.2. vModel.test.js
 
 ```js
-if (typeof TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-}
-
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-const jsDomIntance = new JSDOM(`
-<!DOCTYPE html>
-<body>
-  <div id="app">
-    <div id="test">
-        {{message}}
-    </div>
-    <input type="text" v-model="message"/>
-  </div>
-</body>
-<script src="../../dist/bundle.js"></script>
-<script>
-  var vue = new MVVM_mock({
-    el: "#app",
-    data: {
-      message: 'v-model测试'
-    }
-  })
-</script>
-</html>
-`, 
-  {
-    contentType: "text/html",
-    // runScripts: "dangerously",
-    resources: "usable"
-  },
-)
-const window_mock = jsDomIntance.window; // window 对象
-const document = window_mock.document; // document 对象
-const value = document.getElementById('test').textContent;
+import { MVVM } from '../../src/index';
 
 test('v-model test', () => {
-    expect(value).toBe(document.getElementById('test').textContent);
+  document.body.innerHTML = `
+  <div id="app">
+    <div v-bind:id="id">{{message}}:{{name}}</div>
+    <input type="text" v-model="name"/>
+    <button v-on:click="handleClick">获取输入值</button>
+  </div>
+  `;
+  const vue = new MVVM({
+    el: "#app",
+    data: {
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
+    },
+  })
+  const actualValue = document.getElementsByTagName("input")[0].value
+  expect(vue.name).toBe(actualValue);
+  vue.name = "修改后"
+  const modifiedValue = document.getElementsByTagName("input")[0].value
+  expect(vue.name).toBe(modifiedValue);
 });
 ```
 
 ### 4.2.3. vOn.test.js
 
 ```js
-if (typeof TextEncoder !== 'function') {
-    const TextEncodingPolyfill = require('text-encoding');
-    window.TextEncoder = TextEncodingPolyfill.TextEncoder;
-    window.TextDecoder = TextEncodingPolyfill.TextDecoder;
-}
+import { MVVM } from '../../src/index';
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-const jsDomIntance = new JSDOM(`
-<!DOCTYPE html>
-<body>
+test('v-on test', () => {
+  document.body.innerHTML = `
   <div id="app">
+    <div v-bind:id="id">{{message}}:{{name}}</div>
     <input type="text" v-model="name"/>
-    <button id="test" v-on:click="handleClick">获取输入值</button>
+    <button v-on:click="handleClick" id="bt">获取输入值</button>
   </div>
-</body>
-<script src="../../dist/bundle.js"></script>
-<script>
-  var vue = new MVVM_mock({
+  `;
+  const vue = new MVVM({
     el: "#app",
     data: {
-      message: 'v-on测试'
+      message: "测试",
+      name: "百度前端",
+      id: "1234"
     },
     methods: {
-        handleClick: function() {
-          alert(this.message + ":" + this.name + ", 点击确定会修改值");
-          this.name = '修改了值为此~';
-          console.log(document.getElementById(1234))
-        }
+      handleClick: function() {
+        this.name = '修改了值为此~';
       }
+    }
   })
-</script>
-</html>
-`, 
-  {
-    contentType: "text/html",
-    // runScripts: "dangerously",
-    resources: "usable"
-  },
-)
-const window_mock = jsDomIntance.window; // window 对象
-const document = window_mock.document; // document 对象
-const value = document.getElementById('test');
-
-test('v-model test', () => {
-    expect(value).toBe(document.getElementById('test'));
+  document.getElementById('bt').click();
+  const actualValue = '修改了值为此~'
+  expect(vue.name).toBe(actualValue);
 });
 ```
 
 ## 4.3. 测试结果
 
-![image-20220719234125452](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220719234125452.png)
+![image-20220720123743581](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220720123743581.png)
+
+## 4.4. 测试覆盖率
+
+![image-20220720123819724](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220720123819724.png)
+
+![image-20220720123901137](https://peng-img.oss-cn-shanghai.aliyuncs.com/markdown-img/image-20220720123901137.png)
