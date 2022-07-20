@@ -18,4 +18,7 @@ test('v-model test', () => {
   })
   const actualValue = document.getElementsByTagName("input")[0].value
   expect(vue.name).toBe(actualValue);
+  vue.name = "修改后"
+  const modifiedValue = document.getElementsByTagName("input")[0].value
+  expect(vue.name).toBe(modifiedValue);
 });
