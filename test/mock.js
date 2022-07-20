@@ -5,7 +5,7 @@
  * @author Peng Junzhi
  * @param {*} options 
  */
-function MVVM_mock(options) {
+export default function MVVM_mock(options) {
   // 初始化
   this.$data = options.data;
   this.$methods = options.methods;
@@ -102,7 +102,7 @@ MVVM_mock.prototype._compile = function() {
       // 解析{{}}里面的内容
       // 保存指令原始内容，不然数据更新时无法完成替换
       var text = node.innerText;
-      var matches = text.match(/{{([^{}]+)}}/g);
+      var matches = String(text).match(/{{([^{}]+)}}/g);
       if(matches && matches.length > 0) {
         // 保存和node绑定的所有属性
         node.bindingAttributes = [];

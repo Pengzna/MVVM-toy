@@ -1,4 +1,4 @@
-import Watcher_ts from "../watcher/watcher";
+import Watcher_ts from '../watcher/watcher';
 import { RegexpStr } from '../const/regex';
 
 /**
