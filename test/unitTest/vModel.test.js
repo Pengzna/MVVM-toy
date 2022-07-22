@@ -16,9 +16,15 @@ test('v-model test', () => {
       id: "1234"
     },
   })
-  const actualValue = document.getElementsByTagName("input")[0].value
+  const actualValue = document.getElementsByTagName("input")[0].value;
   expect(vue.name).toBe(actualValue);
-  vue.name = "修改后"
+  const input = document.getElementsByTagName("input")[0];
+  // 触发v-model需要触发事件。
+  input.addEventListener('input', function () {
+    vue.name = "修改后"
+  });
+  let inputEvent = new Event('input');
+  input.dispatchEvent(inputEvent);
   const modifiedValue = document.getElementsByTagName("input")[0].value
   expect(vue.name).toBe(modifiedValue);
 });
