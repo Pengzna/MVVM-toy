@@ -6,9 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const watcher_1 = __importDefault(require("../watcher/watcher"));
 const regex_1 = require("../const/regex");
 /**
- * Compile 遍历所有的节点，解析指令，为每个节点绑定更新函数，且添加订阅者
+ * _compile是用来解析指令，它遍历结点，为每个节点绑定更新函数并添加订阅者
  * 当订阅者通知 view 更新的时候，调用更新函数，实现对视图的更新。
- * 这里同样需要使用立即执行函数来解决闭包依赖的循环项问题。
  * @param that
  */
 function _compile(that) {
@@ -24,7 +23,7 @@ function _compile(that) {
             // 解析{{}}里面的内容
             // 保存指令原始内容，不然数据更新时无法完成替换
             var text = node.innerText;
-            var matches = String(text).match(regex_1.RegexpStr.braceg);
+            var matches = text.match(regex_1.RegexpStr.braceg);
             if (matches && matches.length > 0) {
                 // 保存和node绑定的所有属性
                 node.bindingAttributes = [];

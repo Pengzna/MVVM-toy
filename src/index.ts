@@ -13,10 +13,8 @@ interface MVVM {
 }
 
 /**
- * MVVM 完成初始化操作，并且调用 observer 和 compile。
- * 对$data进行代理，如此便可以通过this.attribute来代理this.$data.attribute。
- * 因为一个属性可能对应多个指令，所以需要一个_binding 属性来存放属性对应的所有订阅者
- * 这样属性一改变，就可以取出所有的订阅者去更新视图。
+ * MVVM 完成初始化操作，并且调用_observer 和_compile。
+ * 对$data进行代理，并通过this.attribute来代理this.$data.attribute
  */
 class MVVM implements MVVM {
     // 初始化
@@ -24,7 +22,9 @@ class MVVM implements MVVM {
     this.$data = options.data;
     this.$methods = options.methods;
     this.$el = options.el;
-    // 保存data的每个属性对应的所有watcher
+    // 保存data的每个属性对应的所有watcher 
+    // 因为一个属性可能对应多个指令，所以需要一个_binding 属性来存放属性对应的所有订阅者
+    // 这样属性一改变，就可以取出所有的订阅者去更新视图。
     this._binding  = {};
     // 调用observer和compile
     _observer(options.data, this);
@@ -59,5 +59,6 @@ class MVVM implements MVVM {
   }
 }
 
+// 显示初始化window的MVVM对象，防止找不到definition
 // @ts-ignore
 window.MVVM = MVVM;
