@@ -1,7 +1,9 @@
 /**
-* Observer遍历$data，通过Object.defineProperty的setter的挟持数据改变
-* 监听到数据改变后取出所有该属性对应的订阅者，然后通知更新函数更新视图。  
-*/
+ * Observer遍历$data，通过Object.defineProperty的setter的挟持数据改变
+ * 监听到数据改变后取出所有该属性对应的订阅者，然后通知更新函数更新视图。 
+ * @param data 
+ * @param that 
+ */
 export default function _observer(data: any, that: any) {
  var self = that;
  for(var key in that.$data) {
